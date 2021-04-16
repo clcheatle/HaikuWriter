@@ -2,15 +2,18 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using BusinessLogic;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
+using Repository;
 
 namespace HaikuWriterApi
 {
@@ -26,6 +29,24 @@ namespace HaikuWriterApi
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            //Set up connection string to the database
+            string connectionString = Configuration.GetConnectionString("HaikuConnection");
+
+            //add DB Context
+            services.AddDbContext<HaikuDbContext>(options =>
+            {
+                options.UseSqlServer(connectionString);
+            });
+
+            services.AddScoped<HaikuMethods>();
+            services.AddScoped<UserMethods>();
+            services.AddScoped<HaikuGenerator>();
+            services.AddScoped<HaikuDbContext>();
+            services.AddScoped<HaikuRepo>();
+            services.AddScoped<UserRepo>();
+            services.AddScoped<ForumMethods>();
+            services.AddScoped<ForumRepo>();
+
             services.AddCors(options =>
             {
                 options.AddDefaultPolicy(
@@ -53,7 +74,7 @@ namespace HaikuWriterApi
             app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "HaikuWriterApi v1"));
 
             app.UseHttpsRedirection();
-             app.UseCors();
+            app.UseCors();
             app.UseRouting();
 
             app.UseAuthorization();

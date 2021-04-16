@@ -1,0 +1,10 @@
+{
+  "dependencies": {
+    "mssql1": {
+      "resourceId": "/subscriptions/[parameters('subscriptionId')]/resourceGroups/[parameters('resourceGroupName')]/providers/Microsoft.Sql/servers/haikuwriterdb/databases/haikuDB",
+      "type": "mssql.azure",
+      "connectionId": "HaikuConnection",
+      "secretStore": "AzureAppSettings"
+    }
+  }
+}
